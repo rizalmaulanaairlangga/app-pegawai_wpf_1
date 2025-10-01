@@ -13,6 +13,6 @@
   </style>
 </head>
 <body>
-  @yield('content')
+  @yield('')
 </body>
 </html>

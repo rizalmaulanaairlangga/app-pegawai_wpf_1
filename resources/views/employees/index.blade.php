@@ -1,23 +1,13 @@
-@extends('layouts.app')
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Pegawai</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-</head>
-<body class="poppins-regular bg-gray-100 text-gray-800">
+@extends('master')
+@section('title', 'Daftar Pegawai')
+@section('content')
   <div class="max-w-7xl mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
     <h1 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-600 pb-2 mb-6">
       Daftar Pegawai
     </h1>
 
     <div class="overflow-x-auto">
-      <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+      <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden" border="1" cellpadding="5" cellspacing="0">
         <thead class="bg-blue-600 text-white">
           <tr>
             <th class="px-4 py-3 text-left text-sm font-semibold">Nama Lengkap</th>
@@ -91,5 +81,5 @@
       </table>
     </div>
   </div>
-</body>
-</html>
+
+@endsection
