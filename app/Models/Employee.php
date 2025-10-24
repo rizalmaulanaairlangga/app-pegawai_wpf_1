@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    protected $fillable = [ 
+    use HasFactory;
+
+    protected $table = 'employees';
+
+    protected $fillable = [
         'nama_lengkap', 
         'email', 
         'nomor_telepon', 
@@ -14,5 +19,28 @@ class Employee extends Model
         'alamat', 
         'tanggal_masuk', 
         'status', 
+        'departemen_id',
+        'jabatan_id',
+        'karyawan_id',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'departemen_id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'jabatan_id');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'karyawan_id');
+    }
+
+    public function salaries()
+    {
+        return $this->hasMany(Salary::class, 'karyawan_id');
+    }
 }

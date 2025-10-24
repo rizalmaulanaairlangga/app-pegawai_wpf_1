@@ -1,86 +1,156 @@
 @extends('layouts.app')
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edit Data</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="font-[Poppins] bg-gray-50 min-h-screen flex items-center justify-center">
+@section('title', 'Edit Pegawai - ' . $employee->nama_lengkap)
 
-    <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Edit Data Pegawai</h2>
+@section('content')
 
-        <form action="{{ route('employees.update', $employee->id) }}" method="POST" class="space-y-5">
+<div class="poppins-regular bg-gray-100 flex items-center justify-center">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl">
+        <x-action-buttons type="back" />
+        <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">Edit Data Pegawai</h1>
+
+        <form action="{{ route('employees.update', $employee->id) }}" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             @csrf
             @method('PUT')
 
             <!-- Nama Lengkap -->
             <div>
-                <label class="block mb-1 text-gray-700 font-medium">Nama Lengkap</label>
-                <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $employee->nama_lengkap) }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                <input type="text" id="nama_lengkap" name="nama_lengkap"
+                    value="{{ old('nama_lengkap', $employee->nama_lengkap) }}"
+                    class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 
+                           focus:ring-blue-500 focus:border-blue-500">
+                @error('nama_lengkap')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Email -->
             <div>
-                <label class="block mb-1 text-gray-700 font-medium">Email</label>
-                <input type="email" name="email" value="{{ old('email', $employee->email) }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email"
+                    value="{{ old('email', $employee->email) }}"
+                    class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 
+                           focus:ring-blue-500 focus:border-blue-500">
+                @error('email')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Nomor Telepon -->
             <div>
-                <label class="block mb-1 text-gray-700 font-medium">Nomor Telepon</label>
-                <input type="text" name="nomor_telepon" value="{{ old('nomor_telepon', $employee->nomor_telepon) }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <label for="nomor_telepon" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
+                <input type="text" id="nomor_telepon" name="nomor_telepon"
+                    value="{{ old('nomor_telepon', $employee->nomor_telepon) }}"
+                    class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 
+                           focus:ring-blue-500 focus:border-blue-500">
+                @error('nomor_telepon')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Tanggal Lahir -->
             <div>
-                <label class="block mb-1 text-gray-700 font-medium">Tanggal Lahir</label>
-                <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $employee->tanggal_lahir) }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+                <input type="date" id="tanggal_lahir" name="tanggal_lahir"
+                    value="{{ old('tanggal_lahir', $employee->tanggal_lahir) }}"
+                    class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 
+                           focus:ring-blue-500 focus:border-blue-500">
+                @error('tanggal_lahir')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Alamat -->
-            <div>
-                <label class="block mb-1 text-gray-700 font-medium">Alamat</label>
-                <input type="text" name="alamat" value="{{ old('alamat', $employee->alamat) }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <div class="md:col-span-2">
+                <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
+                <textarea id="alamat" name="alamat" rows="3"
+                    class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 
+                           focus:ring-blue-500 focus:border-blue-500">{{ old('alamat', $employee->alamat) }}</textarea>
+                @error('alamat')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Tanggal Masuk -->
             <div>
-                <label class="block mb-1 text-gray-700 font-medium">Tanggal Masuk</label>
-                <input type="date" name="tanggal_masuk" value="{{ old('tanggal_masuk', $employee->tanggal_masuk) }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <label for="tanggal_masuk" class="block text-sm font-medium text-gray-700">Tanggal Masuk</label>
+                <input type="date" id="tanggal_masuk" name="tanggal_masuk"
+                    value="{{ old('tanggal_masuk', $employee->tanggal_masuk) }}"
+                    class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 
+                           focus:ring-blue-500 focus:border-blue-500">
+                @error('tanggal_masuk')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Departemen -->
+            <div>
+                <label for="departemen_id" class="block text-sm font-medium text-gray-700">Departemen</label>
+                <select id="departemen_id" name="departemen_id"
+                        class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">-- Pilih Departemen --</option>
+                    @foreach ($departments as $dept)
+                        <option value="{{ $dept->id }}" 
+                            {{ old('departemen_id', $employee->departemen_id) == $dept->id ? 'selected' : '' }}>
+                            {{ $dept->nama_departemen }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('departemen_id')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Jabatan -->
+            <div>
+                <label for="jabatan_id" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                <select id="jabatan_id" name="jabatan_id"
+                        class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">-- Pilih Jabatan --</option>
+                    @foreach ($positions as $pos)
+                        <option value="{{ $pos->id }}"
+                            {{ old('jabatan_id', $employee->jabatan_id) == $pos->id ? 'selected' : '' }}>
+                            {{ $pos->nama_jabatan }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('jabatan_id')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Status -->
             <div>
-                <label class="block mb-1 text-gray-700 font-medium">Status</label>
-                <select name="status"
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <option value="aktif" {{ strtolower(old('status', $employee->status)) == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="nonaktif" {{ strtolower(old('status', $employee->status)) == 'nonaktif' ? 'selected' : '' }}>Non Aktif</option>
+                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                <select id="status" name="status"
+                    class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 
+                        focus:ring-blue-500 focus:border-blue-500">
+                    @php
+                        $currentStatus = old('status', $employee->status);
+                    @endphp
+                    <option value="Aktif" 
+                        {{ $currentStatus == 'Aktif' || strtolower($currentStatus) == 'aktif' ? 'selected' : '' }}>
+                        Aktif
+                    </option>
+                    <option value="Nonaktif" 
+                        {{ $currentStatus == 'Nonaktif' || strtolower($currentStatus) == 'nonaktif' ? 'selected' : '' }}>
+                        Nonaktif
+                    </option>
                 </select>
+                @error('status')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
-            <!-- Tombol -->
-            <div class="flex justify-end">
+            <!-- Tombol Update -->
+            <div class="md:col-span-2 flex justify-end pt-4">
                 <button type="submit"
-                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow transition duration-300">
                     Update
                 </button>
             </div>
         </form>
     </div>
+</div>
 
-</body>
-</html>
+@endsection

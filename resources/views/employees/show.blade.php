@@ -1,69 +1,100 @@
 @extends('layouts.app')
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Detail Data Employee</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-</head>
-<body class="poppins-regular">
-<div class="min-h-screen bg-gray-100 flex items-center justify-center py-10">
-    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">Detail Pegawai</h1>
+@section('title', 'Detail Pegawai - ' . $employee->nama_lengkap)
 
-        <div class="overflow-hidden rounded-lg border border-gray-200">
-            <table class="w-full text-left border-collapse">
-                <tbody class="divide-y divide-gray-200">
-                    <tr>
-                        <th class="px-4 py-3 bg-gray-50 text-gray-700 font-semibold w-1/3">Nama Lengkap</th>
-                        <td class="px-4 py-3">{{ $employee->nama_lengkap }}</td>
-                    </tr>
-                    <tr>
-                        <th class="px-4 py-3 bg-gray-50 text-gray-700 font-semibold">Email</th>
-                        <td class="px-4 py-3">{{ $employee->email }}</td>
-                    </tr>
-                    <tr>
-                        <th class="px-4 py-3 bg-gray-50 text-gray-700 font-semibold">Nomor Telepon</th>
-                        <td class="px-4 py-3">{{ $employee->nomor_telepon }}</td>
-                    </tr>
-                    <tr>
-                        <th class="px-4 py-3 bg-gray-50 text-gray-700 font-semibold">Tanggal Lahir</th>
-                        <td class="px-4 py-3">{{ $employee->tanggal_lahir }}</td>
-                    </tr>
-                    <tr>
-                        <th class="px-4 py-3 bg-gray-50 text-gray-700 font-semibold">Alamat</th>
-                        <td class="px-4 py-3">{{ $employee->alamat }}</td>
-                    </tr>
-                    <tr>
-                        <th class="px-4 py-3 bg-gray-50 text-gray-700 font-semibold">Tanggal Masuk</th>
-                        <td class="px-4 py-3">{{ $employee->tanggal_masuk }}</td>
-                    </tr>
-                    <tr>
-                        <th class="px-4 py-3 bg-gray-50 text-gray-700 font-semibold">Status</th>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full text-sm font-medium
-                                {{ strtolower($employee->status) === 'aktif' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800' }}">
-                                {{ ucfirst($employee->status) }}
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+@section('content')
 
-        <div class="mt-6 flex justify-end">
-            <a href="{{ route('employees.index') }}" 
-               class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg shadow transition duration-300">
-                Kembali
+<div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
+  <x-action-buttons type="back" />
+
+  <h2 class="text-2xl font-bold mb-6 text-blue-700">Detail Pegawai</h2> {{-- Diperbaiki judul --}}
+
+  <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+    <tbody class="divide-y divide-gray-100">
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left w-1/3">ID</th>
+        <td class="px-4 py-2">{{ $employee->id }}</td>
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Nama Lengkap</th>
+        <td class="px-4 py-2">{{ $employee->nama_lengkap }}</td>
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Email</th>
+        <td class="px-4 py-2">
+          <a href="mailto:{{ $employee->email }}" class="text-blue-600 hover:underline">
+            {{ $employee->email }}
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Nomor Telepon</th>
+        <td class="px-4 py-2">
+          <a href="tel:{{ $employee->nomor_telepon }}" class="text-blue-600 hover:underline">
+            {{ $employee->nomor_telepon }}
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Tanggal Lahir</th>
+        <td class="px-4 py-2">{{ \Carbon\Carbon::parse($employee->tanggal_lahir)->format('d F Y') }}</td> {{-- Format tanggal --}}
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Alamat</th>
+        <td class="px-4 py-2">{{ $employee->alamat }}</td>
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Tanggal Masuk</th>
+        <td class="px-4 py-2">{{ \Carbon\Carbon::parse($employee->tanggal_masuk)->format('d F Y') }}</td> {{-- Format tanggal --}}
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Departemen</th>
+        <td class="px-4 py-2">
+          @if($employee->department)
+            <a href="{{ route('departments.show', $employee->department->id) }}" 
+               class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors duration-200">
+              {{ $employee->department->nama_departemen }}
             </a>
-        </div>
-    </div>
+          @else
+            <span class="text-gray-500">-</span>
+          @endif
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Jabatan</th>
+        <td class="px-4 py-2">
+          @if($employee->position)
+            <a href="{{ route('positions.show', $employee->position->id) }}" 
+               class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium hover:bg-green-200 transition-colors duration-200">
+              {{ $employee->position->nama_jabatan }}
+            </a>
+          @else
+            <span class="text-gray-500">-</span>
+          @endif
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-gray-100 px-4 py-2 text-left">Status</th>
+        <td class="px-4 py-2">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+            {{ $employee->status == 'Aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+            {{ $employee->status }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="mt-6 flex justify-end space-x-3">
+    {{-- Tombol Edit --}}
+    <x-action-buttons type="edit" :routePrefix="'employees'" :id="$employee->id" />
+    
+    {{-- Tombol Delete --}}
+    <x-action-buttons 
+      type="delete" 
+      :routePrefix="'employees'" 
+      :id="$employee->id"
+      confirmMessage="Yakin ingin menghapus data Pegawai {{ $employee->nama_lengkap }}?"/>
+  </div>
 </div>
-</html>
+
+@endsection
