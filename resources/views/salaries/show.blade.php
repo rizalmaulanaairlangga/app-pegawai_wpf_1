@@ -2,7 +2,7 @@
 @section('title', 'Detail Gaji - ' . $salary->id)
 
 @section('content')
-<div class="poppins-regular h-full w-full flex items-center justify-center">
+<div class="font-[Poppins] bg-gray-50 h-full w-full flex items-center items-center justify-center">
   <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl">
     <x-action-buttons type="back" />
 

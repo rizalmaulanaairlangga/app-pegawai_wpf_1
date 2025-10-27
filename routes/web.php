@@ -11,6 +11,8 @@ use App\Http\Controllers\{
     SalaryController
 };
 
+Route::resource('/', DepartmentController::class);
+
 Route::resource('departments', DepartmentController::class);
 Route::resource('employees', EmployeeController::class);
 Route::resource('positions', PositionController::class);

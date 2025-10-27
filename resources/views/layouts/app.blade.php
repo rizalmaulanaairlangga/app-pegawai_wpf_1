@@ -96,7 +96,7 @@
       </header>
 
       {{-- Content --}}
-      <main class="flex-1 p-8 transition-all duration-500 ease-out transform"
+      <main class="flex-1 p-2 transition-all duration-500 ease-out transform"
             :class="($store.sidebar.open || $store.sidebar.pinned) ? 'translate-x-0' : 'translate-x-1'">
         @yield('content')
       </main>

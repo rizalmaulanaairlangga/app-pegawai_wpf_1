@@ -2,7 +2,7 @@
 @section('title', 'Edit Posisi / Jabatan')
 
 @section('content')
-<div class="font-[Poppins] bg-gray-50 flex items-center justify-center">
+<div class="font-[Poppins] bg-gray-50 h-full w-full flex items-center items-center justify-center">
     <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-3xl">
         <x-action-buttons type="back" />
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">

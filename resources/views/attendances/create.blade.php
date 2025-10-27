@@ -3,7 +3,7 @@
 
 @section('content')
 
-<div class="poppins-regular bg-gray-100 flex items-center justify-center">
+<div class="font-[Poppins] bg-gray-50 h-full w-full flex items-center items-center justify-center">
     <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
         <x-action-buttons type="back" />
         <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">Form Absensi Karyawan</h1>
