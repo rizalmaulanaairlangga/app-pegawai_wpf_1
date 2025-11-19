@@ -12,6 +12,7 @@ class Employee extends Model
     protected $table = 'employees';
 
     protected $fillable = [
+        'user_id',
         'nama_lengkap', 
         'email', 
         'nomor_telepon', 
@@ -42,5 +43,10 @@ class Employee extends Model
     public function salaries()
     {
         return $this->hasMany(Salary::class, 'karyawan_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

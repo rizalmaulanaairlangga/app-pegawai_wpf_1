@@ -5,21 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $attendances = Attendance::with(['employee'])
-                            ->orderBy('id') 
-                            ->paginate(10);
-        return view('attendances.index', compact('attendances'));
+        $selectedMonth = $request->get('month', now()->month);
+        $selectedYear = $request->get('year', now()->year);
+        $daysInMonth = \Carbon\Carbon::create($selectedYear, $selectedMonth)->daysInMonth;
+
+        $employees = \App\Models\Employee::all();
+        $attendances = \App\Models\Attendance::whereYear('tanggal', $selectedYear)
+            ->whereMonth('tanggal', $selectedMonth)
+            ->get();
+
+        $yearList = range(now()->year - 2, now()->year + 1);
+
+        return view('admin.attendances.index', compact(
+            'employees', 'attendances', 'selectedMonth', 'selectedYear', 'daysInMonth', 'yearList'
+        ));
     }
 
     public function create()
     {
         $employees = Employee::all();
-        return view('attendances.create', compact('employees'));
+        return view('admin.attendances.create', compact('employees'));
     }
 
     public function store(Request $request)
@@ -33,20 +44,20 @@ class AttendanceController extends Controller
         ]);
 
         Attendance::create($request->all());
-        return redirect()->route('attendances.index')->with('success', 'Absensi berhasil ditambahkan.');
+        return redirect()->route('admin.attendances.index')->with('success', 'Absensi berhasil ditambahkan.');
     }
 
     public function show($id)
     {
         $attendance = Attendance::with('employee')->findOrFail($id);
-        return view('attendances.show', compact('attendance'));
+        return view('admin.attendances.show', compact('attendance'));
     }
 
     public function edit($id)
     {
         $attendance = Attendance::findOrFail($id);
         $employees = Employee::all();
-        return view('attendances.edit', compact('attendance', 'employees'));
+        return view('admin.attendances.edit', compact('attendance', 'employees'));
     }
 
     public function update(Request $request, $id)
@@ -61,12 +72,13 @@ class AttendanceController extends Controller
 
         $attendance = Attendance::findOrFail($id);
         $attendance->update($request->all());
-        return redirect()->route('attendances.index')->with('success', 'Absensi berhasil diperbarui.');
+        return redirect()->route('admin.attendances.index')->with('success', 'Absensi berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         Attendance::findOrFail($id)->delete();
-        return redirect()->route('attendances.index')->with('success', 'Absensi berhasil dihapus.');
+        return redirect()->route('admin.attendances.index')->with('success', 'Absensi berhasil dihapus.');
     }
+
 }

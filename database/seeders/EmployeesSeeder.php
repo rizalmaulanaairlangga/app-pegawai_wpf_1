@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Employee;
 use Faker\Factory as Faker;
 
 class EmployeesSeeder extends Seeder
@@ -12,7 +15,6 @@ class EmployeesSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        // daftar departemen & posisi (disesuaikan dengan seeder departments dan positions)
         $departments = [
             1 => 'Human Resource',
             2 => 'Finance',
@@ -48,5 +50,35 @@ class EmployeesSeeder extends Seeder
         }
 
         DB::table('employees')->insert($employees);
+
+        // Ambil semua employee setelah insert
+        $allEmployees = Employee::all();
+
+        foreach ($allEmployees as $index => $employee) {
+            $firstWord = strtolower(explode(' ', $employee->nama_lengkap)[0]);
+            $baseUsername = preg_replace('/[^a-z0-9]/', '', $firstWord);
+            $username = $baseUsername;
+            $counter = 1;
+
+            // Cegah duplikasi username
+            while (User::where('username', $username)->exists()) {
+                $username = $baseUsername . $counter;
+                $counter++;
+            }
+
+            // 3 user pertama jadi admin, sisanya staff
+            $role = $index < 3 ? 'admin' : 'staff';
+
+            $user = User::create([
+                'name' => $employee->nama_lengkap,
+                'username' => $username,
+                'email' => $employee->email,
+                'password' => Hash::make('pw'),
+                'role' => $role,
+            ]);
+
+            // Hubungkan user_id ke employee
+            $employee->update(['user_id' => $user->id]);
+        }
     }
 }
