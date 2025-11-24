@@ -123,17 +123,18 @@ class EmployeeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        $employee = Employee::find($id);
-
-        // putus akun login-nya dulu
+        $employee = Employee::findOrFail($id);
+        
+        // optional: deactivate user instead of deleting
         if ($employee->user) {
-            $employee->user->delete();
+            $employee->user->update(['is_active' => false]); // atau hapus
         }
 
-        $employee->delete(); // soft delete
+        $employee->delete();
 
-        return redirect()->route('employees.index')->with('success', 'Data pegawai berhasil dihapus.');
+        return redirect()->route('employees.index')->with('success', 'Employee berhasil dihapus dan akun dinonaktifkan.');
     }
+
 }

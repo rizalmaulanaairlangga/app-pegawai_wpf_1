@@ -1,8 +1,45 @@
+app/
+└── Http/
+    ├── Controllers/
+    │   ├── Admin/
+    │   │   ├── AttendanceController.php
+    │   │   ├── DepartmentController.php
+    │   │   ├── EmployeeController.php
+    │   │   ├── PositionController.php
+    │   │   ├── SalaryController.php
+    │   │
+    │   ├── Auth/
+    │   │   ├── AuthController.php
+    │   │   ├── ForgotPasswordController.php
+    │   │   └── ResetPasswordController.php
+    │   │
+    │   ├── Staff/
+    │   │   ├── StaffDashboardController.php
+    │   │   ├── MyAttendanceController.php
+    │   │   ├── MyProfileController.php
+    │   │   ├── MySalaryController.php
+    │   │   └── AccountController.php
+    │   │
+    │   └── Controller.php
+    │
+    ├── Middleware/
+    │   ├── CheckRole.php
+    │   ├── EnsureEmployeeExists.php
+    │   └── CheckEmployeeAccess.php
+    │
+    └── Kernel.php
+│
+├── Models/
+│   ├── Attendance.php
+│   ├── Department.php
+│   ├── Employee.php
+│   ├── Position.php
+│   ├── Salary.php
+│   └── User.php
+│
 resources/
 └── views/
     ├── admin/
-    │   ├── dashboard.blade.php
-    │   │
     │   ├── attendances/
     │   │   ├── index.blade.php
     │   │   ├── create.blade.php
@@ -10,7 +47,7 @@ resources/
     │   │   └── show.blade.php
     │   │
     │   ├── departments/
-    │   │   ├── index.blade.php
+    │   │   ├── index.blade.php  ← redirect admin after login
     │   │   ├── create.blade.php
     │   │   ├── edit.blade.php
     │   │   └── show.blade.php
@@ -34,7 +71,7 @@ resources/
     │       └── show.blade.php
     │
     ├── staff/
-    │   ├── dashboard.blade.php
+    │   ├── dashboard.blade.php  ← Redirect staff after login
     │   │
     │   ├── myattendance/
     │   │   └── index.blade.php
@@ -45,13 +82,22 @@ resources/
     │   └── mysalaries/
     │       └── index.blade.php
     │
+    ├── settings/
+    │   └── index.blade.php   ← Kedua role dapat akses
+    │
     ├── auth/
     │   ├── login.blade.php
+    │   ├── forgot-password.blade.php
+    │   ├── reset-password.blade.php
     │   └── register.blade.php
     │
     ├── layouts/
-    │   ├── admin.blade.php
-    │   └── staff.blade.php
+    │   ├── app.blade.php     ← layout utama admin+staff
+    │   ├── sidebar.blade.php
+    │   └── auth.blade.php     ← layout khusus auth
     │
-    └── errors/
-        └── 403.blade.php
+    ├── components/
+    │   ├── table.blade.php
+    │   └── action-buttons.blade.php
+    │
+    └── home.blade.php

@@ -38,12 +38,28 @@
             color: #2563eb;
         }
 
+        /* Style untuk tombol mata - bisa di-override di view lain */
+        .pw-toggle {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        .pw-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
     </style>
+
+    {{-- Stack untuk head scripts --}}
+    @stack('styles')
 </head>
 
-<body class="bg-gradient-to-br from-indigo-100 to-indigo-300 min-h-screen flex items-center justify-center">
+<body class="bg-gradient-to-br from-indigo-100 to-indigo-300 min-h-screen flex items-center justify-center p-4">
 
-  <div class="bg-white shadow-2xl rounded-2xl w-full max-w-md p-10 space-y-6">
+  <div class="bg-white shadow-2xl rounded-2xl w-full max-w-md p-8 space-y-6">
 
     {{-- Logo + Judul --}}
     <div class="text-center">
@@ -112,47 +128,54 @@
     @yield('form')
 
     {{-- Bottom links --}}
-    <div class="text-center text-sm text-gray-600 mt-6">
+    <div class="text-center text-sm text-gray-600 mt-6 pt-4 border-t">
       @yield('bottom_links')
     </div>
 
   </div>
 
-<script>
-function togglePassword() {
-    const passwordInput = document.getElementById("password");
-    const eyeClosed = document.getElementById("eyeClosed");
-    const eyeOpen = document.getElementById("eyeOpen");
+  {{-- Default scripts untuk auth --}}
+  <script>
+  // Function untuk toggle password single field (untuk login)
+  function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const eyeClosed = document.getElementById("eyeClosed");
+      const eyeOpen = document.getElementById("eyeOpen");
 
-    if (passwordInput.type === "password") {
-        // Show password - ubah ke text, tampilkan mata terbuka, sembunyikan mata tertutup
-        passwordInput.type = "text";
-        eyeClosed.classList.add("hidden");
-        eyeOpen.classList.remove("hidden");
-    } else {
-        // Hide password - ubah ke password, tampilkan mata tertutup, sembunyikan mata terbuka
-        passwordInput.type = "password";
-        eyeOpen.classList.add("hidden");
-        eyeClosed.classList.remove("hidden");
-    }
-}
+      if (passwordInput && eyeClosed && eyeOpen) {
+          if (passwordInput.type === "password") {
+              // Show password
+              passwordInput.type = "text";
+              eyeClosed.classList.add("hidden");
+              eyeOpen.classList.remove("hidden");
+          } else {
+              // Hide password
+              passwordInput.type = "password";
+              eyeOpen.classList.add("hidden");
+              eyeClosed.classList.remove("hidden");
+          }
+      }
+  }
 
-// Optional: Add Enter key support for forms
-document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && e.target.type !== 'textarea') {
-                e.preventDefault();
-                const submitBtn = form.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.click();
-                }
-            }
-        });
-    });
-});
-</script>
+  // Enter key support untuk semua form
+  document.addEventListener('DOMContentLoaded', function() {
+      const forms = document.querySelectorAll('form');
+      forms.forEach(form => {
+          form.addEventListener('keypress', function(e) {
+              if (e.key === 'Enter' && e.target.type !== 'textarea') {
+                  e.preventDefault();
+                  const submitBtn = form.querySelector('button[type="submit"]');
+                  if (submitBtn) {
+                      submitBtn.click();
+                  }
+              }
+          });
+      });
+  });
+  </script>
+
+  {{-- Stack untuk additional scripts dari view --}}
+  @stack('scripts')
 
 </body>
 </html>

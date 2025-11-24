@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -41,11 +42,11 @@ class AuthController extends Controller
         Auth::login($user);
 
         if ($user->role === 'admin') {
-            return redirect()->route('departments.index');
+            return redirect()->route('departments.index')->with('success', 'Berhasil login sebagai Admin.');
         } elseif ($user->role === 'staff') {
-            return redirect()->route('staff.dashboard');
+            return redirect()->route('staff.dashboard')->with('success', 'Berhasil login sebagai Staff');
         }
-        return redirect()->route('home');
+        return redirect()->route('home')->with('info', 'Role user tidak dikenali.');
     }
 
     // tampilkan form register (dapat menerima ?email=... untuk prefill)
@@ -57,61 +58,43 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // cari apakah sudah ada user dengan email tersebut
-        $existing = User::where('email', $request->input('email'))->first();
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'exists:users,email'], // Harus sudah ada!
+            'username' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9\s\-_.]+$/'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'], // Min 6 karakter
+        ], [
+            'email.exists' => 'Email tidak terdaftar di sistem. Hubungi admin.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'username.regex' => 'Username hanya boleh huruf, angka, spasi, garis bawah, titik, dan strip.'
+        ]);
 
-        // rules dasar
-        $rules = [
-            'name' => ['required','string','max:255'],
-            'email' => ['required','email','max:255'],
-            'password' => ['required','string','min:8','confirmed'],
-        ];
+        // cek existing user
+        $existing = User::where('email', $validated['email'])->first();
 
-        if ($existing) {
-            // Jika masih placeholder (belum punya password)
-            if (empty($existing->password)) {
-                $existing->update([
-                    'username' => $request->username,
-                    'password' => Hash::make($request->password)
-                ]);
-
-                return redirect('/login')->with('success', 'Akun berhasil diaktifkan. Silakan login.');
-            }
-
-            // Sudah aktif → tolak
-            return back()->withErrors(['email' => 'Email ini sudah memiliki akun aktif.']);
+        // jika sudah pernah aktif → tolak
+        if (!empty($existing->password)) {
+            return back()->withErrors(['email' => 'Email ini sudah memiliki akun aktif.'])->withInput();
         }
 
-        $validated = $request->validate($rules);
-
-        if ($existing) {
-            // update placeholder user: set name & password
-            $existing->name = $validated['name'];
-            $existing->password = Hash::make($validated['password']);
-            $existing->save();
-
-            Auth::login($existing);
-
-            return redirect()->intended('/'); // atau route dashboard
-        }
-
-        // buat user baru
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+        // aktivasi akun placeholder
+        $existing->update([
+            'name'     => $validated['username'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        Auth::login($user);
-
-        return redirect()->intended('/');
+        return redirect()->route('login')
+            ->with('success', 'Akun berhasil diaktifkan. Silakan login.');
     }
 
     /** Logout user */
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('/')->with('success', 'Berhasil logout.');
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('success', 'Berhasil logout.');
     }
 
     /** Tampilkan halaman lupa password */
@@ -130,4 +113,5 @@ class AuthController extends Controller
         // Misal nanti pakai Mail, sekarang cukup simulasi
         return back()->with('status', 'Link reset password telah dikirim ke email Anda (simulasi).');
     }
+
 }
