@@ -13,72 +13,90 @@ class EmployeesSeeder extends Seeder
 {
     public function run(): void
     {
+        
         $faker = Faker::create('id_ID');
 
-        $departments = [
-            1 => 'Human Resource',
-            2 => 'Finance',
-            3 => 'IT',
-            4 => 'Marketing',
-        ];
+        // **1️⃣ Hapus dulu data lama**
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        $positions = [
-            1 => 'Manager',
-            2 => 'Supervisor',
-            3 => 'Staff',
-            4 => 'Intern',
-        ];
+        DB::table('attendances')->truncate();
+        DB::table('salaries')->truncate();
+        DB::table('employees')->truncate();
+        DB::table('users')->truncate();
 
-        $employees = [];
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        foreach ($departments as $deptId => $deptName) {
-            foreach ($positions as $posId => $posName) {
-                $employees[] = [
-                    'nama_lengkap'   => $faker->name(),
-                    'email'          => strtolower($posName) . '.' . strtolower(str_replace(' ', '', $deptName)) . '@company.com',
-                    'nomor_telepon'  => '08' . $faker->numberBetween(1000000000, 9999999999),
-                    'tanggal_lahir'  => $faker->date('Y-m-d', '2000-12-31'),
-                    'alamat'         => $faker->address(),
-                    'tanggal_masuk'  => $faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
-                    'departemen_id'  => $deptId,
-                    'jabatan_id'     => $posId,
-                    'status'         => 'aktif',
-                    'created_at'     => now(),
-                    'updated_at'     => now(),
-                ];
-            }
-        }
+        // **2️⃣ Buat Admin DEFAULT**
+        $adminUser = User::create([
+            'name'     => 'Administrator',
+            'username' => 'admin',
+            'email'    => 'admin@hrisense.com',
+            'password' => Hash::make('pw'),
+            'role'     => 'admin',
+        ]);
 
-        DB::table('employees')->insert($employees);
+        $adminEmployee = Employee::create([
+            'user_id'       => $adminUser->id,
+            'nama_lengkap'  => 'Administrator',
+            'email'         => 'admin@hrisense.com',
+            'nomor_telepon' => '081111111111',
+            'tanggal_lahir' => '1990-01-01',
+            'alamat'        => 'Kantor Pusat HRISense',
+            'tanggal_masuk' => now(),
+            'departemen_id' => 1,
+            'jabatan_id'    => 1,
+            'status'        => 'aktif',
+        ]);
 
-        // Ambil semua employee setelah insert
-        $allEmployees = Employee::all();
+        // **3️⃣ Buat Staff DEFAULT**
+        $staffUser = User::create([
+            'name'     => 'Staff Default',
+            'username' => 'staff',
+            'email'    => 'staff@hrisense.com',
+            'password' => Hash::make('pw'),
+            'role'     => 'staff',
+        ]);
 
-        foreach ($allEmployees as $index => $employee) {
-            $firstWord = strtolower(explode(' ', $employee->nama_lengkap)[0]);
-            $baseUsername = preg_replace('/[^a-z0-9]/', '', $firstWord);
-            $username = $baseUsername;
-            $counter = 1;
+        $staffEmployee = Employee::create([
+            'user_id'       => $staffUser->id,
+            'nama_lengkap'  => 'Staff Default',
+            'email'         => 'staff@hrisense.com',
+            'nomor_telepon' => '082222222222',
+            'tanggal_lahir' => '1995-01-01',
+            'alamat'        => 'Cabang HRISense',
+            'tanggal_masuk' => now(),
+            'departemen_id' => 2,
+            'jabatan_id'    => 3,
+            'status'        => 'aktif',
+        ]);
 
-            // Cegah duplikasi username
-            while (User::where('username', $username)->exists()) {
-                $username = $baseUsername . $counter;
-                $counter++;
-            }
+        // **4️⃣ Generate Dummy Lain**
+        $departments = [1, 2, 3, 4];
+        $positions   = [1, 2, 3, 4];
 
-            // 3 user pertama jadi admin, sisanya staff
-            $role = $index < 3 ? 'admin' : 'staff';
+        for ($i = 0; $i < 15; $i++) {
+            $name = $faker->name();
+            $email = strtolower(str_replace(' ', '', $name)) . '@company.com';
 
-            $user = User::create([
-                'name' => $employee->nama_lengkap,
-                'username' => $username,
-                'email' => $employee->email,
-                'password' => Hash::make('pw'),
-                'role' => $role,
+            $employee = Employee::create([
+                'nama_lengkap'  => $name,
+                'email'         => $email,
+                'nomor_telepon' => '08' . $faker->numberBetween(1000000000, 9999999999),
+                'tanggal_lahir' => $faker->date('Y-m-d', '2000-12-31'),
+                'alamat'        => $faker->address(),
+                'tanggal_masuk' => $faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
+                'departemen_id' => $faker->randomElement($departments),
+                'jabatan_id'    => $faker->randomElement($positions),
+                'status'        => 'aktif',
             ]);
 
-            // Hubungkan user_id ke employee
-            $employee->update(['user_id' => $user->id]);
+            User::create([
+                'name'     => $name,
+                'username' => strtolower(explode(' ', $name)[0]) . $i,
+                'email'    => $email,
+                'password' => Hash::make('pw'),
+                'role'     => 'staff',
+            ]);
         }
     }
 }

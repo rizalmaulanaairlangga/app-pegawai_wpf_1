@@ -1,0 +1,57 @@
+resources/
+└── views/
+    ├── admin/
+    │   ├── dashboard.blade.php
+    │   │
+    │   ├── attendances/
+    │   │   ├── index.blade.php
+    │   │   ├── create.blade.php
+    │   │   ├── edit.blade.php
+    │   │   └── show.blade.php
+    │   │
+    │   ├── departments/
+    │   │   ├── index.blade.php
+    │   │   ├── create.blade.php
+    │   │   ├── edit.blade.php
+    │   │   └── show.blade.php
+    │   │
+    │   ├── employees/
+    │   │   ├── index.blade.php
+    │   │   ├── create.blade.php
+    │   │   ├── edit.blade.php
+    │   │   └── show.blade.php
+    │   │
+    │   ├── positions/
+    │   │   ├── index.blade.php
+    │   │   ├── create.blade.php
+    │   │   ├── edit.blade.php
+    │   │   └── show.blade.php
+    │   │
+    │   └── salaries/
+    │       ├── index.blade.php
+    │       ├── create.blade.php
+    │       ├── edit.blade.php
+    │       └── show.blade.php
+    │
+    ├── staff/
+    │   ├── dashboard.blade.php
+    │   │
+    │   ├── myattendance/
+    │   │   └── index.blade.php
+    │   │
+    │   ├── myprofile/
+    │   │   └── index.blade.php
+    │   │
+    │   └── mysalaries/
+    │       └── index.blade.php
+    │
+    ├── auth/
+    │   ├── login.blade.php
+    │   └── register.blade.php
+    │
+    ├── layouts/
+    │   ├── admin.blade.php
+    │   └── staff.blade.php
+    │
+    └── errors/
+        └── 403.blade.php

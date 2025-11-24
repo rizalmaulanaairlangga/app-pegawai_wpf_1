@@ -46,45 +46,56 @@
                           class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
             </div>
 
-            <!-- Tanggal Masuk -->
-            <div>
-                <label for="tanggal_masuk" class="block text-sm font-medium text-gray-700">Tanggal Masuk</label>
-                <input type="date" id="tanggal_masuk" name="tanggal_masuk" 
-                       class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
+            <!-- bagian After Alamat -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:col-span-2">
+                {{-- Tanggal Masuk --}}
+                <div>
+                    <label for="tanggal_masuk" class="block text-sm font-medium text-gray-700">Tanggal Masuk</label>
+                    <input type="date" id="tanggal_masuk" name="tanggal_masuk" class="mt-1 w-full ..." />
+                </div>
 
-            <!-- Departemen -->
-            <div>
-                <label for="departemen_id" class="block text-sm font-medium text-gray-700">Departemen</label>
-                <select id="departemen_id" name="departemen_id"
-                        class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                {{-- Departemen --}}
+                <div>
+                    <label for="departemen_id" class="block text-sm font-medium text-gray-700">Departemen</label>
+                    <select id="departemen_id" name="departemen_id" class="mt-1 w-full ...">
                     <option value="">-- Pilih Departemen --</option>
                     @foreach ($departments as $dept)
                         <option value="{{ $dept->id }}">{{ $dept->nama_departemen }}</option>
                     @endforeach
-                </select>
+                    </select>
+                </div>
+
+                {{-- Role --}}
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                    <select id="role" name="role" class="mt-1 w-full ...">
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Jabatan -->
-            <div>
-                <label for="jabatan_id" class="block text-sm font-medium text-gray-700">Jabatan</label>
-                <select id="jabatan_id" name="jabatan_id"
-                        class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+            <!-- baris selanjutnya -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-2">
+                {{-- Jabatan --}}
+                <div>
+                    <label for="jabatan_id" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                    <select id="jabatan_id" name="jabatan_id" class="mt-1 w-full ...">
                     <option value="">-- Pilih Jabatan --</option>
                     @foreach ($positions as $pos)
                         <option value="{{ $pos->id }}">{{ $pos->nama_jabatan }}</option>
                     @endforeach
-                </select>
-            </div>
+                    </select>
+                </div>
 
-            <!-- Status -->
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select id="status" name="status" 
-                        class="mt-1 w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                {{-- Status --}}
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select id="status" name="status" class="mt-1 w-full ...">
                     <option value="aktif">Aktif</option>
                     <option value="nonaktif">Nonaktif</option>
-                </select>
+                    </select>
+                </div>
             </div>
 
             <!-- Tombol Submit -->

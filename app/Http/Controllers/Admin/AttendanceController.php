@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Employee;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
         $selectedMonth = $request->get('month', now()->month);
-        $selectedYear = $request->get('year', now()->year);
+        $selectedYear  = $request->get('year', now()->year);
         $daysInMonth = \Carbon\Carbon::create($selectedYear, $selectedMonth)->daysInMonth;
 
-        $employees = \App\Models\Employee::all();
-        $attendances = \App\Models\Attendance::whereYear('tanggal', $selectedYear)
+        $employees = Employee::all();
+        $attendances = Attendance::whereYear('tanggal', $selectedYear)
             ->whereMonth('tanggal', $selectedMonth)
             ->get();
 
@@ -37,14 +37,14 @@ class AttendanceController extends Controller
     {
         $request->validate([
             'karyawan_id' => 'required|exists:employees,id',
-            'tanggal' => 'required|date',
+            'tanggal'     => 'required|date',
             'waktu_masuk' => 'required',
-            'waktu_keluar' => 'required',
+            'waktu_keluar'=> 'required',
             'status_absensi' => 'required|in:hadir,izin,sakit,alpha',
         ]);
 
         Attendance::create($request->all());
-        return redirect()->route('admin.attendances.index')->with('success', 'Absensi berhasil ditambahkan.');
+        return redirect()->route('attendances.index')->with('success', 'Absensi berhasil ditambahkan.');
     }
 
     public function show($id)
@@ -64,21 +64,20 @@ class AttendanceController extends Controller
     {
         $request->validate([
             'karyawan_id' => 'required|exists:employees,id',
-            'tanggal' => 'required|date',
+            'tanggal'     => 'required|date',
             'waktu_masuk' => 'required',
-            'waktu_keluar' => 'required',
+            'waktu_keluar'=> 'required',
             'status_absensi' => 'required|in:hadir,izin,sakit,alpha',
         ]);
 
         $attendance = Attendance::findOrFail($id);
         $attendance->update($request->all());
-        return redirect()->route('admin.attendances.index')->with('success', 'Absensi berhasil diperbarui.');
+        return redirect()->route('attendances.index')->with('success', 'Absensi berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         Attendance::findOrFail($id)->delete();
-        return redirect()->route('admin.attendances.index')->with('success', 'Absensi berhasil dihapus.');
+        return redirect()->route('attendances.index')->with('success', 'Absensi berhasil dihapus.');
     }
-
 }

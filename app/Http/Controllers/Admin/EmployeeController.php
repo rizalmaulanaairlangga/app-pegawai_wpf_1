@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Department;
 use App\Models\Position;
+use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -17,7 +21,7 @@ class EmployeeController extends Controller
         $employees = Employee::with(['department', 'position'])
                         ->orderBy('id') 
                         ->paginate(5);
-        return view('employees.index', compact('employees'));
+        return view('admin.employees.index', compact('employees'));
     }
 
     /**
@@ -28,7 +32,7 @@ class EmployeeController extends Controller
         $departments = Department::all();
         $positions = Position::all();
 
-        return view('employees.create', compact('departments', 'positions'));
+        return view('admin.employees.create', compact('departments', 'positions'));
     }
 
     /**
@@ -46,10 +50,30 @@ class EmployeeController extends Controller
         'departemen_id' => 'nullable|exists:departments,id',
         'jabatan_id'    => 'nullable|exists:positions,id',
         'status' => 'required|string|max:50',
+        'role' => 'required|in:admin,staff',
         ]);
 
-        Employee::create($request->all());
-        return redirect()->route('employees.index');
+        // 1) buat employee
+        $employee = Employee::create($request->only([
+            'nama_lengkap', 'email', 'nomor_telepon',
+            'tanggal_lahir', 'alamat', 'tanggal_masuk',
+            'departemen_id','jabatan_id','status'
+        ]));
+
+        // 2) buat user minimal: nama, email, role, username = null, password random (tidak diketahui)
+        $tempPassword = Str::random(12);
+        $user = User::create([
+            'name' => $employee->nama_lengkap,
+            'username' => null,
+            'email' => $employee->email,
+            'password' => null, // BELUM DISET — menunggu user daftar
+            'role' => $request->input('role', 'staff'),
+        ]);
+
+        // 3) hubungkan employee -> user
+        $employee->update(['user_id' => $user->id]);
+
+        return redirect()->route('employees.index')->with('success', 'Pegawai berhasil ditambahkan. User awal dibuat (user harus mendaftar untuk men-set username & password).');
     }
 
     /**
@@ -58,7 +82,7 @@ class EmployeeController extends Controller
     public function show($id)
     {
         $employee = Employee::with(['department', 'position'])->findOrFail($id);
-        return view('employees.show', compact('employee'));
+        return view('admin.employees.show', compact('employee'));
     }
 
     /**
@@ -70,7 +94,7 @@ class EmployeeController extends Controller
         $departments = Department::all();
         $positions = Position::all();
         
-        return view('employees.edit', compact('employee', 'departments', 'positions'));
+        return view('admin.employees.edit', compact('employee', 'departments', 'positions'));
     }
 
     /**
@@ -102,7 +126,14 @@ class EmployeeController extends Controller
     public function destroy(string $id)
     {
         $employee = Employee::find($id);
-        $employee->delete();
+
+        // putus akun login-nya dulu
+        if ($employee->user) {
+            $employee->user->delete();
+        }
+
+        $employee->delete(); // soft delete
+
         return redirect()->route('employees.index')->with('success', 'Data pegawai berhasil dihapus.');
     }
 }

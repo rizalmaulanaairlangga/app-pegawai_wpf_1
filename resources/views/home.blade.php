@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HRISense - HR Management System</title>
@@ -13,6 +14,37 @@
 
     .gradient-bg {
         background: linear-gradient(90deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
+    }
+
+
+    /* Style untuk flash messages */
+    .alert {
+      padding: 12px 16px;
+      margin: 16px;
+      border-radius: 8px;
+      border-left: 4px solid;
+      position: relative;
+      transition: all 0.3s ease-out;
+    }
+    .alert-error {
+      background-color: #fef2f2;
+      border-color: #dc2626;
+      color: #dc2626;
+    }
+    .alert-success {
+      background-color: #f0fdf4;
+      border-color: #16a34a;
+      color: #16a34a;
+    }
+    .alert-warning {
+      background-color: #fffbeb;
+      border-color: #d97706;
+      color: #d97706;
+    }
+    .alert-info {
+      background-color: #eff6ff;
+      border-color: #2563eb;
+      color: #2563eb;
     }
   </style>
 </head>
@@ -56,36 +88,52 @@
         </div>
     </header>
 
-  <!-- HERO SECTION -->
-  <section class="flex flex-col md:flex-row items-center justify-between container mx-auto px-6 py-20">
-    <div class="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-        Kelola SDM Perusahaan Anda <br>
-        Dengan <span class="text-indigo-600">HRISense</span>
-      </h2>
-      <p class="text-gray-600 mb-8 text-lg">
-        Platform HRIS modern untuk mengelola kehadiran, absensi, cuti, dan penggajian dalam satu sistem terintegrasi.
-      </p>
-      @if(session('user'))
-        <a href="{{ url('/dashboard') }}" 
-           class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition transform hover:-translate-y-1">
-          Masuk ke Dashboard
-        </a>
-      @else
-        <a href="{{ url('/login') }}" 
-        class="relative z-10 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg
-                transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
-        Mulai Sekarang
-        </a>
+    {{-- Flash Messages --}}
+    <div class="space-y-2">
+      @if(session('warning'))
+        <div x-data="{ show: true }" x-show="show"
+            x-transition
+            class="alert alert-warning flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span>{{ session('warning') }}</span>
+          </div>
+          <button @click="show = false" class="ml-4 p-1 rounded-full hover:bg-red-200 transition">
+            ✕
+          </button>
+        </div>
       @endif
     </div>
 
-    <!-- GAMBAR HERO -->
-    <div class="md:w-1/2 flex justify-center">
-      <img src="/images/home-head-section.jpg" alt="Ilustrasi HR Management"
-           class="w-4/5 md:w-full drop-shadow-xl rounded-xl">
-    </div>
-  </section>
+    <!-- HERO SECTION -->
+    <section class="flex flex-col md:flex-row items-center justify-between container mx-auto px-6 py-20">
+      <div class="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+          Kelola SDM Perusahaan Anda <br>
+          Dengan <span class="text-indigo-600">HRISense</span>
+        </h2>
+        <p class="text-gray-600 mb-8 text-lg">
+          Platform HRIS modern untuk mengelola kehadiran, absensi, cuti, dan penggajian dalam satu sistem terintegrasi.
+        </p>
+        @if(session('user'))
+          <a href="{{ url('/dashboard') }}" 
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition transform hover:-translate-y-1">
+            Masuk ke Dashboard
+          </a>
+        @else
+          <a href="{{ url('/login') }}" 
+          class="relative z-10 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg
+                  transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
+          Mulai Sekarang
+          </a>
+        @endif
+      </div>
+
+      <!-- GAMBAR HERO -->
+      <div class="md:w-1/2 flex justify-center">
+        <img src="/images/home-head-section.jpg" alt="Ilustrasi HR Management"
+            class="w-4/5 md:w-full drop-shadow-xl rounded-xl">
+      </div>
+    </section>
 
     <!-- FITUR -->
     <section id="features" class="relative bg-white py-32 overflow-hidden">

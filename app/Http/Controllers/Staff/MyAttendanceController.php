@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Staff;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Auth;
@@ -106,7 +107,7 @@ class MyAttendanceController extends Controller
         $employee = Auth::user()->employee;
 
         if (!$employee) {
-            return redirect()->route('staff.myattendance.index')
+            return redirect()->route('myattendance.index')
                 ->with('error', 'Data karyawan tidak ditemukan.');
         }
 

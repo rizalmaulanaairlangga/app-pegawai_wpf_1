@@ -20,7 +20,7 @@
 
         {{-- Section: Absensi Hari Ini + Rekap Bulanan --}}
         <div class="px-8 mt-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"> 
 
                 {{-- Kiri: Absensi Hari Ini --}}
                 <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6">

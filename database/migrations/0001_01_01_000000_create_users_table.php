@@ -11,9 +11,10 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // nama lengkap
-            $table->string('username')->unique(); // username singkat
+            $table->string('username')->nullable()->unique();   // username singkat, boleh null karena user dibuat pertama kali oleh admin tanpa username
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
+            $table->rememberToken();    
             $table->enum('role', ['admin', 'staff'])->default('staff');
             $table->timestamps();
         });

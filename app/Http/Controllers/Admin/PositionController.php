@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Position;
 use Illuminate\Http\Request;
 
@@ -10,12 +11,12 @@ class PositionController extends Controller
     public function index()
     {
         $positions = Position::orderBy('id')->get();
-        return view('positions.index', compact('positions'));
+        return view('admin.positions.index', compact('positions'));
     }
 
     public function create()
     {
-        return view('positions.create');
+        return view('admin.positions.create');
     }
 
     public function store(Request $request)
@@ -37,13 +38,13 @@ class PositionController extends Controller
     public function show($id)
     {
         $position = Position::findOrFail($id);
-        return view('positions.show', compact('position'));
+        return view('admin.positions.show', compact('position'));
     }
 
     public function edit($id)
     {
         $position = Position::findOrFail($id);
-        return view('positions.edit', compact('position'));
+        return view('admin.positions.edit', compact('position'));
     }
 
     public function update(Request $request, $id)

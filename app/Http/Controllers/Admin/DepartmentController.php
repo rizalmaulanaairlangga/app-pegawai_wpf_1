@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Department;
 use Illuminate\Http\Request;
 
@@ -11,13 +12,13 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::orderBy('id')->get();
-        return view('departments.index', compact('departments'));
+        return view('admin.departments.index', compact('departments'));
     }
 
     // tampilkan form tambah data
     public function create()
     {
-        return view('departments.create');
+        return view('admin.departments.create');
     }
 
     // simpan data baru
@@ -35,14 +36,14 @@ class DepartmentController extends Controller
     public function show($id)
     {
         $department = Department::findOrFail($id);
-        return view('departments.show', compact('department'));
+        return view('admin.departments.show', compact('department'));
     }
 
     // tampilkan form edit
     public function edit($id)
     {
         $department = Department::findOrFail($id);
-        return view('departments.edit', compact('department'));
+        return view('admin.departments.edit', compact('department'));
     }
 
     // update data

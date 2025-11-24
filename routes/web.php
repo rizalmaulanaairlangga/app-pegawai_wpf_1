@@ -1,29 +1,66 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\{
+
+// ======================
+// 📌 Import Controllers By Namespace
+// ======================
+use App\Http\Controllers\Auth\{
+    AuthController,
+    ForgotPasswordController,
+    ResetPasswordController,
+};
+
+use App\Http\Controllers\AccountController;
+
+// Admin Controllers
+use App\Http\Controllers\Admin\{
     DepartmentController,
     EmployeeController,
     PositionController,
     AttendanceController,
     SalaryController,
-    MyProfileController,
-    MyAttendanceController,
-    MySalaryController,
 };
 
-// ======================
-// 🔐 AUTHENTICATION
-// ======================
+// Staff Controllers
+use App\Http\Controllers\Staff\{
+    MyAttendanceController,
+    MySalaryController,
+    MyProfileController,
+    StaffDashboardController,
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATION
+|--------------------------------------------------------------------------
+*/
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// 🔁 Forgot Password (simulasi)
-Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot.password');
-Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot.password.send');
+// Registration
+// show register form
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+
+// proses register
+Route::post('/register', [AuthController::class, 'register'])->name('register.process');
+
+
+// Forgot Password
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('forgot.password');
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('forgot.password.send');
+
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+    ->name('password.reset');
+
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');
 
 
 /*
@@ -32,62 +69,61 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    // Jika sudah login, redirect ke halaman sesuai role
     $user = Auth::user();
     if ($user) {
-        switch ($user->role) {
-            case 'admin':
-                return redirect('/departments');
-            case 'staff':
-                return redirect('/dashboard');
-            default:
-                return view('home');
-        }
+        return $user->role === 'admin'
+            ? redirect()->route('departments.index')
+            : redirect()->route('staff.dashboard');
     }
     return view('home');
 })->name('home');
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN AREA - Pakai middleware auth dan role:admin
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['role:admin'])
-    ->name('admin.') // ⬅️ Tambah ini
-    ->group(function () {
-        Route::resource('departments', DepartmentController::class);
-        Route::resource('employees', EmployeeController::class);
-        Route::resource('positions', PositionController::class);
-        Route::resource('attendances', AttendanceController::class);
-        Route::resource('salaries', SalaryController::class);
-    });
 
 /*
 |--------------------------------------------------------------------------
-| STAFF AREA - Pakai middleware auth dan role:staff
+| ADMIN AREA - Pakai middleware role:admin
 |--------------------------------------------------------------------------
 */
-Route::middleware(['role:staff'])->group(function () {
-    Route::get('/dashboard', function () {
-        $user = Auth::user();
-        return view('staff.dashboard', compact('user'));
-    });
-
-    Route::resource('myprofile', MyProfileController::class);
-
-    // Tambahan route untuk absensi dirinya sendiri
-    Route::resource('myattendance', MyAttendanceController::class)->only(['index']);
-    // Tombol aksi absensi pribadi
-    Route::post('/myattendance/checkin', [App\Http\Controllers\MyAttendanceController::class, 'checkIn'])
-        ->name('myattendance.checkin');
-    Route::post('/myattendance/checkout', [App\Http\Controllers\MyAttendanceController::class, 'checkOut'])
-        ->name('myattendance.checkout');
-    Route::get('/my-salaries', [App\Http\Controllers\MySalaryController::class, 'index'])
-        ->name('mysalaries.index');
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/dashboard', [App\Http\Controllers\StaffDashboardController::class, 'index'])
-            ->name('staff.dashboard');
-    });
-
+Route::middleware(['auth', 'role:admin', 'employee_exists'])->group(function () {
+    Route::resource('departments', DepartmentController::class);
+    Route::resource('employees', EmployeeController::class);
+    Route::resource('positions', PositionController::class);
+    Route::resource('attendances', AttendanceController::class);
+    Route::resource('salaries', SalaryController::class);
 });
 
+
+/*
+|--------------------------------------------------------------------------
+| STAFF AREA - Pakai middleware role:staff
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:staff', 'employee_exists'])->group(function () {
+
+    // Dashboard Staff
+    Route::get('/dashboard', [StaffDashboardController::class, 'index'])
+        ->name('staff.dashboard');
+
+    // Profile Staff
+    Route::resource('myprofile', MyProfileController::class);
+
+    // Absensi Staff
+    Route::resource('myattendance', MyAttendanceController::class)->only(['index']);
+
+    // Aksi Check In/Out
+    Route::post('/myattendance/checkin', [MyAttendanceController::class, 'checkIn'])
+        ->name('myattendance.checkin');
+    Route::post('/myattendance/checkout', [MyAttendanceController::class, 'checkOut'])
+        ->name('myattendance.checkout');
+
+    // Gaji Staff
+    Route::get('/my-salaries', [MySalaryController::class, 'index'])
+        ->name('mysalaries.index');
+});
+
+
+Route::middleware(['auth', 'role:admin,staff', 'employee_exists'])->group(function () {
+    Route::get('/settings', [AccountController::class, 'edit'])->name('settings.edit');
+    // gunakan put untuk semantics update
+    Route::put('/settings', [AccountController::class, 'update'])->name('settings.update');
+});

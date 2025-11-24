@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Staff;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,7 @@ class MyProfileController extends Controller
                 ->with('error', 'Anda tidak memiliki akses ke profil ini.');
         }
 
-        return view('staff.myprofile.show', compact('employee'));
+        return view('staff.myprofile.index', compact('employee'));
     }
 
     public function edit($id)
